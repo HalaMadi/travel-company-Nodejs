@@ -2,7 +2,7 @@ import userModel from "../../../DB/models/user.model.js";
 import jwt from 'jsonwebtoken'
 import { sendEmail } from "../../utils/sendEmail.js";
 import bcrypt from 'bcryptjs';
-import { nanoid, customAlphabet } from "nanoid";
+import { customAlphabet } from "nanoid";
 
 export const register = async (req, res) => {
     const { userName, email, password } = req.body;
@@ -60,6 +60,7 @@ export const login = async (req, res) => {
     const token = jwt.sign({ id: user.id, userName: user.userName, role: user.role }, process.env.LOGIN_SIGN)
     return res.status(200).json({ message: 'User logged in successfully', token });
 }
+
 export const sendCode = async (req, res) => {
     const { email } = req.body;
     const code = customAlphabet('123456789abcdefABCDEF', 4)();
@@ -71,6 +72,7 @@ export const sendCode = async (req, res) => {
     await sendEmail(email, `Reset Password`, html)
     return res.status(200).json({ message: "Success" })
 }
+
 export const forgetPassword = async (req, res) => {
     const { code, email, password } = req.body;
     const user = await userModel.findOne({ email });
