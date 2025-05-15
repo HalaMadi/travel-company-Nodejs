@@ -48,14 +48,14 @@ const tripSchema = new Schema({
         type: Boolean,
         default: true
     },
-    // startDate: {
-    //     type: Date,
-    //     required: true
-    // },
-    // endDate: {
-    //     type: Date,
-    //     required: true
-    // },
+    startDate: {
+        type: Date,
+        required: true
+    },
+    endDate: {
+        type: Date,
+        required: true
+    },
     categoryId: {
         type: Types.ObjectId,
         ref: 'Category'
