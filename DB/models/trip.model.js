@@ -60,6 +60,11 @@ const tripSchema = new Schema({
         type: Types.ObjectId,
         ref: 'Category'
     },
+    maxCapacity: {
+        type: Number,
+        required: true,
+        min: 1
+    }
 }, {
     timestamps: true
 });
