@@ -1,13 +1,35 @@
 import bookingModel from "../../../DB/models/booking.model.js";
+import couponModel from "../../../DB/models/coupon.model.js";
 import tripModel from "../../../DB/models/trip.model.js";
-
 export const createBooking = async (req, res) => {
     try {
-        const { tripId, numberOfPeople } = req.body;
+        const { tripId, numberOfPeople, couponName, paymentType, phoneNumber } = req.body;
         const userId = req.id;
         const trip = await tripModel.findById(tripId);
         if (!trip) {
             return res.status(404).json({ message: 'Trip not found' });
+        }
+        let discount = 0;
+        if (couponName) {
+            const coupon = await couponModel.findOne({ name: couponName });
+            if (!coupon) {
+                return res.status(404).json({ message: 'Coupon not found' });
+            }
+            if (coupon.expiryDate < new Date()) {
+                return res.status(400).json({ message: 'Coupon expired' });
+            }
+            if (coupon.usedBy.includes(userId)) {
+                return res.status(400).json({ message: 'Coupon already used' });
+            }
+            if (coupon.status === 'not_active') {
+                return res.status(400).json({ message: 'Coupon not active' });
+            }
+            const originalPrice = trip.price * numberOfPeople;
+            if (coupon.discountPercentage) {
+                discount = (originalPrice * coupon.discountPercentage) / 100;
+            } else if (coupon.discountAmount) {
+                discount = coupon.discountAmount;
+            }
         }
         const existingBooking = await bookingModel.findOne({ userId, tripId });
         if (existingBooking) {
@@ -22,8 +44,26 @@ export const createBooking = async (req, res) => {
         if (numberOfPeople > availableSeats) {
             return res.status(400).json({ message: 'No seats available' });
         }
-        const booking = await bookingModel.create({ userId, tripId, numberOfPeople });
+        const originalPrice = trip.price * numberOfPeople;
+        const totalPrice = originalPrice - discount;
+        const booking = await bookingModel.create({
+            userId,
+            tripId,
+            numberOfPeople,
+            paymentType: paymentType || 'cash',
+            phoneNumber,
+            totalPrice,
+            createdBy: userId,
+            updatedBy: userId
+        });
+        if (couponName) {
+            await couponModel.updateOne(
+                { name: couponName },
+                { $addToSet: { usedBy: userId } }
+            );
+        }
         return res.status(201).json({ message: 'Booking created successfully', booking });
+
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error', error: error.message });
     }

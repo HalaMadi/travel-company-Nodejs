@@ -30,7 +30,22 @@ const bookingSchema = new mongoose.Schema({
         type: Types.ObjectId,
         ref: 'User'
     },
-
+    paymentType: {
+        type: String,
+        enum: ['cash', 'card'],
+        default: 'cash'
+    },
+    phoneNumber: {
+        type: String,
+    },
+    totalPrice: {
+        type: Number,
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['paid', 'unpaid'],
+        default: 'unpaid'
+    }
 }, {
     timestamps: true
 });
