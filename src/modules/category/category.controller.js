@@ -15,6 +15,9 @@ export const getAll = async (req, res) => {
 }
 export const getActive = async (req, res) => {
     const categories = await categoryModel.find({ status: 'active' })
+    if (!categories || categories.length === 0) {
+        return res.status(404).json({ message: 'No active categories found' })
+    }
     return res.status(200).json({ message: 'Success', categories })
 }
 

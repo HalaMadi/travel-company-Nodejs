@@ -43,8 +43,11 @@ export const getAllTrips = async (req, res) => {
     return res.status(200).json({ message: 'Trips retrieved successfully', trips });
 };
 export const getAvailableTrips = async (req, res) => {
-    const trips = await tripModel.find({ isAvailable: true });
-    return res.status(200).json({ message: 'Available trips retrieved successfully', trips });
+    const trips = await tripModel.find({ tripStatus: 'active' });
+    if (!trips || trips.length === 0) {
+        return res.status(404).json({ message: 'No available Trips found' });
+    }
+    return res.status(200).json({ message: 'Available Trips retrieved successfully', trips });
 }
 export const detailsTrip = async (req, res) => {
     const { id } = req.params

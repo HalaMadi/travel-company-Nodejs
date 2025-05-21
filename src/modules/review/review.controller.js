@@ -1,15 +1,23 @@
 import bookingModel from "../../../DB/models/booking.model.js";
 import reviewModel from "../../../DB/models/reviews.mode.js";
+import tripModel from "../../../DB/models/trip.model.js";
 
 export const createReview = async (req, res) => {
     const { tripId } = req.params;
     const { rating, comment } = req.body;
     const userId = req.id;
-    const booking = await bookingModel.findOne({ user: userId, trip: tripId ,tripStatus: 'completed' });
+    const trip = await tripModel.findById(tripId);
+    if (!trip) {
+        return res.status(404).json({ message: 'Trip not found' });
+    }
+    const booking = await bookingModel.findOne({ userId, tripId });
     if (!booking) {
         return res.status(400).json({ message: 'You must book this trip to review it' });
     }
-    const review=await reviewModel.create({
+    if (trip.tripStatus !== 'completed') {
+        return res.status(400).json({ message: 'You can only review completed trips' });
+    }
+    const review = await reviewModel.create({
         createdBy: userId,
         trip: tripId,
         rating,

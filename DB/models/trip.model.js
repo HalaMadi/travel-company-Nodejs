@@ -44,10 +44,6 @@ const tripSchema = new Schema({
         type: Types.ObjectId,
         ref: 'User'
     },
-    isAvailable: {
-        type: Boolean,
-        default: true
-    },
     startDate: {
         type: Date,
         required: true

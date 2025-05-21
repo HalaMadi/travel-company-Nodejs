@@ -65,7 +65,7 @@ export const createBooking = async (req, res) => {
 };
 
 export const getAllBookings = async (req, res) => {
-    const bookings = await bookingModel.find();
+    const bookings = await bookingModel.find().populate('userId').populate('tripId');
     if (!bookings || bookings.length === 0) {
         return res.status(404).json({ message: 'No bookings found' });
     }
@@ -91,6 +91,12 @@ export const updateBooking = async (req, res) => {
     const trip = await tripModel.findById(tripId);
     if (!trip) {
         return res.status(404).json({ message: 'Trip not found' });
+    }
+    if (trip.endDate < new Date()) {
+        return res.status(400).json({ message: 'Trip expired' });
+    }
+    if (trip.tripStatus === 'inactive') {
+        return res.status(400).json({ message: 'Trip not active' });
     }
     const totalSeats = await bookingModel.aggregate([
         { $match: { tripId } },

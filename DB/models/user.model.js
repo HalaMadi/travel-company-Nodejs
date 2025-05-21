@@ -1,4 +1,4 @@
-import mongoose, { model, Schema } from "mongoose";
+import mongoose, { model, Schema, Types } from "mongoose";
 
 
 const userSchema = new Schema({
@@ -37,7 +37,11 @@ const userSchema = new Schema({
     sendCode: {
         type: String,
         default: null,
-    }
+    },
+    bookings: [{
+        type: Types.ObjectId,
+        ref: 'Booking'
+    }]
 }, {
     timestamps: true
 })

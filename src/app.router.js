@@ -1,6 +1,7 @@
 import connectDB from "../DB/connection.js"
 import cors from 'cors'
 import authRouter from './modules/auth/auth.router.js'
+import usersRouter from './modules/user/user.router.js'
 import categoriesRouter from './modules/category/category.router.js'
 import tripsRouter from './modules/trip/trip.router.js'
 import bookingsRouter from './modules/booking/booking.router.js'
@@ -14,6 +15,7 @@ const initApp = async (app, express) => {
         return res.status(200).json({ message: 'Welcome...' })
     })
     app.use('/auth', authRouter)
+    app.use('/users', usersRouter)
     app.use('/categories', categoriesRouter)
     app.use('/trips', tripsRouter)
     app.use('/coupons', couponsRouter)
