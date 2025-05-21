@@ -64,10 +64,25 @@ const tripSchema = new Schema({
         type: Number,
         required: true,
         min: 1
+    },
+    tripStatus: {
+        type: String,
+        enum: ['active', 'inactive', 'completed'],
+        default: 'active'
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
+    }
 });
-
+tripSchema.virtual('reviews', {
+    ref: 'Review',
+    localField: '_id',
+    foreignField: 'trip'
+});
 const tripModel = mongoose.models.Trip || model('Trip', tripSchema)
 export default tripModel

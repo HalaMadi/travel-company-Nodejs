@@ -59,12 +59,12 @@ export const getAvailableTrips = async (req, res) => {
 }
 export const detailsTrip = async (req, res) => {
     const { id } = req.params
-    const trip = await tripModel.findById(id);
+    const trip = await tripModel.findById(id).populate('reviews');
     if (!trip) {
         return res.status(404).json({ message: 'Not found' })
     }
     return res.status(200).json({ message: 'Success', trip })
-}
+};
 
 export const deleteTrip = async (req, res) => {
     const { id } = req.params

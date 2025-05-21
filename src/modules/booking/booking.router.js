@@ -6,7 +6,7 @@ const router=Router();
 
 router.post('/', auth(['user']), controller.createBooking);
 router.get('/', auth(['admin']), controller.getAllBookings);
-router.put('/:id', auth(['admin']), controller.updateBookingStatus);
+router.patch('/:id', auth(['admin']), controller.updateBookingStatus);
 router.put('/update/:id', auth(['user']), controller.updateBooking);
 router.delete('/:id', controller.deleteBooking);
 router.get('/user/:userId', auth(['user']), controller.getUserBookings);

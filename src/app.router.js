@@ -5,6 +5,7 @@ import categoriesRouter from './modules/category/category.router.js'
 import tripsRouter from './modules/trip/trip.router.js'
 import bookingsRouter from './modules/booking/booking.router.js'
 import couponsRouter from './modules/coupon/coupon.router.js'
+import reviewsRouter from './modules/review/review.router.js'
 const initApp = async (app, express) => {
     app.use(express.json())
     app.use(cors())
@@ -17,5 +18,6 @@ const initApp = async (app, express) => {
     app.use('/trips', tripsRouter)
     app.use('/coupons', couponsRouter)
     app.use('/bookings', bookingsRouter)
+    app.use('/reviews', reviewsRouter)
 }
 export default initApp;
