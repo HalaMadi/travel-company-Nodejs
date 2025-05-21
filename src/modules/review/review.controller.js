@@ -20,3 +20,12 @@ export const createReview = async (req, res) => {
     }
     return res.status(201).json({ message: 'Review created successfully', review });
 }
+
+export const getReviews = async (req, res) => {
+    const { tripId } = req.params;
+    const reviews = await reviewModel.find({ trip: tripId }).populate('createdBy', 'name email');
+    if (!reviews) {
+        return res.status(400).json({ message: 'No reviews found' });
+    }
+    return res.status(200).json({ message: 'Reviews retrieved successfully', reviews });
+}

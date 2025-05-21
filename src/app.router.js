@@ -19,5 +19,8 @@ const initApp = async (app, express) => {
     app.use('/coupons', couponsRouter)
     app.use('/bookings', bookingsRouter)
     app.use('/reviews', reviewsRouter)
+    app.use((err, req, res, next) => {
+        return res.status(404).json({ err: err.message })
+    })
 }
 export default initApp;

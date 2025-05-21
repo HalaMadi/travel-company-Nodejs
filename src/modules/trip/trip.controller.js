@@ -4,7 +4,6 @@ import tripModel from "../../../DB/models/trip.model.js";
 import cloudinary from "../../utils/cloudinary.js";
 
 export const createTrip = async (req, res) => {
-    try {
         const { title, categoryId, startDate, endDate, location } = req.body;
         const category = await categoryModel.findById(categoryId);
         if (!category) {
@@ -37,25 +36,15 @@ export const createTrip = async (req, res) => {
         req.body.updatedBy = req.id;
         const trip = await tripModel.create(req.body);
         return res.status(201).json({ message: 'Trip created successfully', trip });
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal Server Error', error: error.message });
-    }
+
 };
 export const getAllTrips = async (req, res) => {
-    try {
-        const trips = await tripModel.find().populate('categoryId', 'title');
-        return res.status(200).json({ message: 'Trips retrieved successfully', trips });
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal Server Error', error: error.message });
-    }
+    const trips = await tripModel.find().populate('categoryId', 'title');
+    return res.status(200).json({ message: 'Trips retrieved successfully', trips });
 };
 export const getAvailableTrips = async (req, res) => {
-    try {
-        const trips = await tripModel.find({ isAvailable: true });
-        return res.status(200).json({ message: 'Available trips retrieved successfully', trips });
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal Server Error', error: error.message });
-    }
+    const trips = await tripModel.find({ isAvailable: true });
+    return res.status(200).json({ message: 'Available trips retrieved successfully', trips });
 }
 export const detailsTrip = async (req, res) => {
     const { id } = req.params

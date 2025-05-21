@@ -2,7 +2,6 @@ import bookingModel from "../../../DB/models/booking.model.js";
 import couponModel from "../../../DB/models/coupon.model.js";
 import tripModel from "../../../DB/models/trip.model.js";
 export const createBooking = async (req, res) => {
-    try {
         const { tripId, numberOfPeople, couponName, paymentType, phoneNumber } = req.body;
         const userId = req.id;
         const trip = await tripModel.findById(tripId);
@@ -63,40 +62,28 @@ export const createBooking = async (req, res) => {
             );
         }
         return res.status(201).json({ message: 'Booking created successfully', booking });
-
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error: error.message });
-    }
 };
 
 export const getAllBookings = async (req, res) => {
-    try {
-        const bookings = await bookingModel.find();
-        if (!bookings || bookings.length === 0) {
-            return res.status(404).json({ message: 'No bookings found' });
-        }
-        return res.status(200).json({ message: 'All bookings retrieved successfully', bookings });
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error: error.message });
+    const bookings = await bookingModel.find();
+    if (!bookings || bookings.length === 0) {
+        return res.status(404).json({ message: 'No bookings found' });
     }
+    return res.status(200).json({ message: 'All bookings retrieved successfully', bookings });
 };
 
 export const updateBookingStatus = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { status } = req.body;
-        const allowedStatuses = ['pending', 'confirmed', 'canceled'];
-        if (!allowedStatuses.includes(status)) {
-            return res.status(400).json({ message: 'Invalid status value' });
-        }
-        const booking = await bookingModel.findByIdAndUpdate(id, { status }, { new: true });
-        if (!booking) {
-            return res.status(404).json({ message: 'Booking not found' });
-        }
-        return res.status(200).json({ message: 'Booking status updated successfully', booking });
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error: error.message });
+    const { id } = req.params;
+    const { status } = req.body;
+    const allowedStatuses = ['pending', 'confirmed', 'canceled'];
+    if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({ message: 'Invalid status value' });
     }
+    const booking = await bookingModel.findByIdAndUpdate(id, { status }, { new: true });
+    if (!booking) {
+        return res.status(404).json({ message: 'Booking not found' });
+    }
+    return res.status(200).json({ message: 'Booking status updated successfully', booking });
 };
 export const updateBooking = async (req, res) => {
     const { id } = req.params;
@@ -121,24 +108,16 @@ export const updateBooking = async (req, res) => {
 
 }
 export const deleteBooking = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const booking = await bookingModel.findByIdAndDelete(id);
-        if (!booking) {
-            return res.status(404).json({ message: 'Booking not found' });
-        }
-        return res.status(200).json({ message: 'Booking deleted successfully' });
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error: error.message });
+    const { id } = req.params;
+    const booking = await bookingModel.findByIdAndDelete(id);
+    if (!booking) {
+        return res.status(404).json({ message: 'Booking not found' });
     }
+    return res.status(200).json({ message: 'Booking deleted successfully' });
 };
 
 export const getUserBookings = async (req, res) => {
-    try {
-        const userId = req.id;
-        const bookings = await bookingModel.find({ userId }).sort({ createdAt: -1 });
-        return res.status(200).json({ message: 'User bookings retrieved successfully', bookings });
-    } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error: error.message });
-    }
+    const userId = req.id;
+    const bookings = await bookingModel.find({ userId }).sort({ createdAt: -1 });
+    return res.status(200).json({ message: 'User bookings retrieved successfully', bookings });
 };
